@@ -77,6 +77,24 @@ def test_messages(client):
 
 def test_delete_message(client):
     """Ensure the messages are being deleted"""
-    rv = client.get('/delete/1')
+    rv = client.get("/delete/1")
+    data = json.loads(rv.data)
+    assert data["status"] == 0
+    login(client, app.config["USERNAME"], app.config["PASSWORD"])
+    rv = client.get("/delete/1")
     data = json.loads(rv.data)
     assert data["status"] == 1
+
+def search(client, query):
+    """Search helper function"""
+    return client.post(
+        "/search/",
+        data=dict(query=query),
+        follow_redirects=True,
+    )
+
+# def test_search(client):
+#     """Test search function"""
+#     rv = client.post('/search', data=dict(
+#         query='<Hello>'
+#     ), follow_redirects=True)
